@@ -10,6 +10,8 @@ S3_IGNORE_SUBDOMAIN_BUCKETNAME = os.environ.get(
     "S3_IGNORE_SUBDOMAIN_BUCKETNAME", ""
 ) in ["1", "true"]
 
+USE_BATCH_THREADING = bool(os.environ.get("MOTO_DISABLE_BATCH_THREADING", 1))
+
 # How many seconds to wait before we "validate" a new certificate in ACM.
 ACM_VALIDATION_WAIT = int(os.environ.get("MOTO_ACM_VALIDATION_WAIT", "60"))
 

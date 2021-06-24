@@ -24,11 +24,13 @@ from .utils import (
     make_arn_for_task_def,
     lowercase_first_key,
 )
+from moto import settings
 from moto.ec2.exceptions import InvalidSubnetIdError
 from moto.ec2.models import INSTANCE_TYPES as EC2_INSTANCE_TYPES
 from moto.iam.exceptions import IAMNotFoundException
 from moto.core import ACCOUNT_ID as DEFAULT_ACCOUNT_ID
 from moto.utilities.docker_utilities import DockerModel, parse_image_ref
+
 
 logger = logging.getLogger(__name__)
 COMPUTE_ENVIRONMENT_NAME_REGEX = re.compile(
@@ -1312,7 +1314,10 @@ class BatchBackend(BaseBackend):
         self._jobs[job.job_id] = job
 
         # Here comes the fun
-        job.start()
+        if settings.USE_BATCH_THREADING:
+            job.start()
+        else:
+            job._mark_stopped(success=True)
 
         return job_name, job.job_id
 
